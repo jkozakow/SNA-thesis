@@ -1,0 +1,124 @@
+random_walk_sample = function(graph, sample_size = 0.05 * length(V(graph)), fly_back = FALSE) {
+  list_to_create_graph <- vector()
+  previous_list <- vector()
+  source_node <- sample(V(graph)$name, 1)
+  stuck_count <- 0
+  current_node <- source_node
+  while(length(list_to_create_graph) < sample_size){
+    if (all(previous_list == list_to_create_graph)){
+      stuck_count <- stuck_count + 1
+    }
+    else{}
+    previous_list <- list_to_create_graph
+    if(!(current_node %in% list_to_create_graph)){
+      list_to_create_graph <- append(list_to_create_graph, current_node)
+    }
+    else{}
+    #print(list_to_create_graph)
+    if(fly_back){
+      to_go_or_not_to_go <- sample(x = c(TRUE, FALSE), size = 1, prob = c(0.85, 0.15))
+    }
+    else{
+      to_go_or_not_to_go <- TRUE
+    }
+    if(to_go_or_not_to_go){
+      node_ego_graph <- induced.subgraph(graph,vids=unlist(neighborhood(graph,order=1,nodes=current_node)))
+      random_neighbour <- sample(V(node_ego_graph)[name !=current_node]$name, 1)
+      current_node <- random_neighbour
+    }
+    else{
+      current_node <- source_node
+    }
+
+    neighbourhood_size <- neighborhood.size(graph, order = 1, nodes=V(graph)[current_node], mode="all")
+    if (stuck_count > neighbourhood_size * 10){
+      current_node <- sample(V(graph)$name, 1)
+      stuck_count <- 0
+    }
+    else{}
+    #print(list_to_create_graph)
+    print(paste(length(list_to_create_graph)))
+  }
+  sample_graph <- induced_subgraph(graph, v = list_to_create_graph)
+  return(sample_graph)
+}
+
+random_jump_sample = function(graph, sample_size = 0.05 * length(V(graph))) {
+  list_to_create_graph <- vector()
+  previous_list <- vector()
+  source_node <- sample(V(graph)$name, 1)
+  stuck_count <- 0
+  current_node <- source_node
+  while(length(list_to_create_graph) < sample_size){
+    if (all(previous_list == list_to_create_graph)){
+      stuck_count <- stuck_count + 1
+    }
+    else{}
+    previous_list <- list_to_create_graph
+    if(!(current_node %in% list_to_create_graph)){
+      list_to_create_graph <- append(list_to_create_graph, current_node)
+    }
+    else{}
+    #print(list_to_create_graph)
+    
+    to_jump_or_not_to_jump <- sample(x = c(TRUE, FALSE), size = 1, prob = c(0.85, 0.15))
+    
+    if(!to_jump_or_not_to_jump){
+      node_ego_graph <- induced.subgraph(graph,vids=unlist(neighborhood(graph,order=1,nodes=current_node)))
+      random_neighbour <- sample(V(node_ego_graph)[name !=current_node]$name, 1)
+      current_node <- random_neighbour
+    }
+    else{
+      current_node <- sample(V(graph)$name, 1)
+    }
+    
+    neighbourhood_size <- neighborhood.size(graph, order = 1, nodes=V(graph)[current_node], mode="all")
+    if (stuck_count > neighbourhood_size * 10){
+      current_node <- sample(V(graph)$name, 1)
+      stuck_count <- 0
+    }
+    else{}
+    #print(list_to_create_graph)
+    print(paste(length(list_to_create_graph)))
+  }
+  sample_graph <- induced_subgraph(graph, v = list_to_create_graph)
+  return(sample_graph)
+}
+
+forest_fire_sample = function(graph, sample_size=0.05, pf = 0.7, pb = 0){
+  list_to_delete_from_graph <- vector()
+  visited_list <- vector() 
+  to_cut <- length(V(slash_graph)) * sample_size
+  while(length(list_to_delete_from_graph) < to_cut){
+    current_node <- sample(V(graph)$name, 1)
+    list_to_delete_from_graph <- append(list_to_delete_from_graph, fire_spread(graph, current_node, visited_list = list_to_delete_from_graph, pb=pb, to_cut=to_cut))
+    
+  }
+  
+  sample_graph <- delete_vertices(graph, list_to_delete_from_graph)
+  return(sample_graph)
+}
+
+fire_spread = function(graph, current_node, pf = 0.7, pb = 0, visited_list, to_cut){
+    if (!(current_node %in% visited_list)){
+      visited_list <- append(visited_list, current_node)
+    }
+    if(length(visited_list) > to_cut){
+      return(visited_list)
+    }
+    node_ego_graph <- induced.subgraph(graph,vids=unlist(neighborhood(graph,order=1,nodes=current_node)))
+    neighbours <- V(node_ego_graph)[name != current_node && !(name %in% visited_list)]$name
+    for (neighbour in neighbours){
+      if(!(neighbour %in% visited_list)){
+        burn_decision <- sample(c(TRUE, FALSE), prob = c(pf, 1-pf), size = 1)
+        if (burn_decision){
+          next_list <- fire_spread(graph, current_node = neighbour, visited_list = visited_list, to_cut=to_cut)
+          visited_list <- append(visited_list, setdiff(next_list, visited_list))
+          print(length(visited_list))
+        }
+        else{}
+      }
+    }
+    
+    return(visited_list)
+}
