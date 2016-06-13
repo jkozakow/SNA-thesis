@@ -90,7 +90,7 @@ random_jump_sample = function(graph, sample_size = 0.05) {
 forest_fire_sample = function(graph, sample_size=0.05, pf = 0.7, pb = 0){
   list_to_delete_from_graph <- vector()
   visited_list <- vector() 
-  to_cut <- length(V(slash_graph)) * sample_size
+  to_cut <- length(V(graph)) * sample_size
   while(length(list_to_delete_from_graph) < to_cut){
     current_node <- sample(V(graph)$name, 1)
     list_to_delete_from_graph <- append(list_to_delete_from_graph, fire_spread(graph, current_node, visited_list = list_to_delete_from_graph, pb=pb, to_cut=to_cut))
