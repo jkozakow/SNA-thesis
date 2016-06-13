@@ -88,8 +88,6 @@ random_jump_sample = function(graph, sample_size = 0.05) {
   return(sample_graph)
 }
 
-<<<<<<< HEAD
-=======
 forest_fire_sample = function(graph, sample_size=0.05, pf = 0.7, pb = 0){
   list_to_delete_from_graph <- vector()
   visited_list <- vector() 
@@ -127,7 +125,6 @@ fire_spread = function(graph, current_node, pf = 0.7, pb = 0, visited_list, to_c
     
     return(visited_list)
 }
->>>>>>> c13f7e88fa5ceaecc699c179b9c067f799de08b8
 
 random_node_sample = function(graph, sample_size = 0.15){
   random_nodes_vector <- sample(c(0,1), prob = c(1 - sample_size, sample_size), replace=TRUE, size = length(V(graph)))
