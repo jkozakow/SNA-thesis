@@ -131,3 +131,11 @@ random_node_sample = function(graph, sample_size = 0.15){
   return(sample_graph)
 }
 
+random_page_rank_node_sample = function(graph, sample_size = 0.15){
+  sample_len <- sample_size * length(V(graph))
+  page_rank <- page.rank(graph, vids = V(graph))
+  nodes_vector <- sample(V(graph)$name, prob = page_rank$vector, replace=FALSE, size = sample_len)
+  sample_graph <- induced.subgraph(graph=graph, vids=nodes_vector)
+  return(sample_graph)
+}
+
