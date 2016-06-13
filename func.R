@@ -116,7 +116,6 @@ forest_fire_sample = function(graph, sample_size = 0.15, pf = 0.7){
   sample_graph <- delete_vertices(graph, list_to_delete_from_graph)
   return(sample_graph)
 }
-
 ff_spread = function(graph, current_node, pf = 0.7, pb = 0, visited_list, to_cut){
   if (!(current_node %in% visited_list)){
     visited_list <- append(visited_list, current_node)
