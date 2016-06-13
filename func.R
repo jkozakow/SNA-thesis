@@ -1,11 +1,12 @@
-random_walk_sample = function(graph, sample_size = 0.05 * length(V(graph)), fly_back = FALSE) {
+random_walk_sample = function(graph, sample_size = 0.05, fly_back = FALSE) {
+  sample_size <- sample_size * length(V(graph))
   list_to_create_graph <- vector()
   previous_list <- vector()
   source_node <- sample(V(graph)$name, 1)
   stuck_count <- 0
   current_node <- source_node
   while(length(list_to_create_graph) < sample_size){
-    if (all(previous_list == list_to_create_graph)){
+    if (setequal(previous_list, list_to_create_graph)){
       stuck_count <- stuck_count + 1
     }
     else{}
@@ -43,14 +44,15 @@ random_walk_sample = function(graph, sample_size = 0.05 * length(V(graph)), fly_
   return(sample_graph)
 }
 
-random_jump_sample = function(graph, sample_size = 0.05 * length(V(graph))) {
+random_jump_sample = function(graph, sample_size = 0.05) {
+  sample_size <- sample_size * length(V(graph))
   list_to_create_graph <- vector()
   previous_list <- vector()
   source_node <- sample(V(graph)$name, 1)
   stuck_count <- 0
   current_node <- source_node
   while(length(list_to_create_graph) < sample_size){
-    if (all(previous_list == list_to_create_graph)){
+    if (setequal(previous_list, list_to_create_graph)){
       stuck_count <- stuck_count + 1
     }
     else{}
@@ -122,3 +124,10 @@ fire_spread = function(graph, current_node, pf = 0.7, pb = 0, visited_list, to_c
     
     return(visited_list)
 }
+
+random_node_sample = function(graph, sample_size = 0.15){
+  random_nodes_vector <- sample(c(0,1), prob = c(1 - sample_size, sample_size), replace=TRUE, size = length(V(graph)))
+  sample_graph <- delete_vertices(graph, which(random_nodes_vector==0)) #Random Nodes
+  return(sample_graph)
+}
+
